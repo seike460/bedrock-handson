@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS Bedrock Handson</title>
+    <style>
+        #loading {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        #loadingMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>AWS Bedrock Handson</h1>
+    <textarea id="prompt" placeholder="プロンプトを入力" rows="20" cols="100"></textarea>
+    <button onclick="sendData()">送信</button>
+    <p id="responseMessage">レスポンスがここに表示されます</p>
+    <div id="loading">
+        <span id="loadingMessage">Loading...</span>
+    </div>
+    <script>
+    function setLoading(isLoading) {
+        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+    }
+
+    function sendData() {
+        setLoading(true);
+        var xhr = new XMLHttpRequest();
+        var promptValue = document.getElementById('prompt').value;
+        var url = 'https://6ko5rmunob.execute-api.us-east-1.amazonaws.com/prod/bedrock?prompt=' + encodeURIComponent(promptValue);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                setLoading(false);
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var message = response.message;
+                    document.getElementById('responseMessage').innerText = message;
+                }
+            }
+        };
+        xhr.open("GET", url, true);
+        xhr.send();
+    }
+    </script>
+</body>
+</html>

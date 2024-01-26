@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Bedrock
+Resources:
+  BedrockApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowOrigin: "'*'"
+  BedrockFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 900
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /bedrock
+            Method: get
+            RestApiId:
+              Ref: BedrockApi
+      Role: !GetAtt BedrockFunctionRole.Arn
+  BedrockFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [lambda.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Policies:
+        - PolicyName: AdministratorAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+  HelloFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: hello/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+            RestApiId:
+              Ref: BedrockApi
+Outputs:
+  BedrockApiURL:
+    Description: "API endpoint URL for Bedrock"
+    Value: !Sub "https://${BedrockApi}.execute-api.${AWS::Region}.amazonaws.com/prod/bedrock"
+  HelloApiURL:
+    Description: "API endpoint URL for Hello function"
+    Value: !Sub "https://${BedrockApi}.execute-api.${AWS::Region}.amazonaws.com/prod/hello"
