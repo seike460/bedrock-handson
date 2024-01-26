@@ -42,7 +42,8 @@
         setLoading(true);
         var xhr = new XMLHttpRequest();
         var promptValue = document.getElementById('prompt').value;
-        var url = 'https://6ko5rmunob.execute-api.us-east-1.amazonaws.com/prod/bedrock?prompt=' + encodeURIComponent(promptValue);
+        // ここのURLは自分のAPI GatewayのURLに置き換えてください
+        var url = 'https://XxxxxxX.execute-api.us-east-1.amazonaws.com/prod/bedrock?prompt=' + encodeURIComponent(promptValue);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 setLoading(false);
