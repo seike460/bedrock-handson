@@ -13,10 +13,8 @@ Resources:
     Properties:
       CodeUri: lambda/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Timeout: 900
-      Layers:
-        - arn:aws:lambda:us-east-1:007585921806:layer:BedrockLayer:1
       Events:
         ApiEvent:
           Type: Api
@@ -49,7 +47,7 @@ Resources:
     Properties:
       CodeUri: hello/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Events:
         ApiEvent:
           Type: Api
