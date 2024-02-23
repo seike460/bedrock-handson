@@ -15,6 +15,8 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 900
+      Layers:
+        - arn:aws:lambda:us-east-1:354305327192:layer:boto3-python-layer:1
       Events:
         ApiEvent:
           Type: Api
